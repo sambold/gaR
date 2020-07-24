@@ -19,11 +19,14 @@ for (f in files){
 #   GENETIC ALGORITHM STARTEN
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-res <- start_ga(fname="data/dj38.tsp", 
-         do_par=T,
-         max_generations=100,
+res <- start_ga(fname="data/lu980.tsp", 
+         do_par=F,
+         max_generations=50,
          print_info=T, 
-         print_plot=T)
+         print_plot=F,
+         dist_matrix_thld=90000,
+         seed=1312)
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   ERGEBNIS PLOTTEN

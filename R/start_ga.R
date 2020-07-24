@@ -51,6 +51,7 @@ start_ga <- function(fname=NULL,
                      seed=NULL,
                      do_par=TRUE,
                      num_cores=NULL,
+                     dist_matrix_thld=90000,
                      print_info=T,
                      print_plot=T){
     # Init
@@ -69,9 +70,16 @@ start_ga <- function(fname=NULL,
     
     # Genetic Algorithm starten
     genes <- init_genes(fname=fname,n=gene_n) 
+    # wenn nicht zu gross fuer memory: Berechnung mit Distmatrix
+    if (gene_n <= dist_matrix_thld) {
+        dist_matrix <- dist(genes %>% dplyr::select(X,Y))
+    } else {
+        dist_matrix <- NULL
+    }
     population <- genes %>%
         init_individuals(n=pop_n) %>%
         score_individuals(genes=genes,
+                          dist_matrix=dist_matrix,
                           do_par=do_par)
     best_individuals <- population %>%
         keep_best()

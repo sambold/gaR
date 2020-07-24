@@ -14,7 +14,8 @@
 #'     do_par TRUE muss die Parallelisierung zuvor initialisiert werden (
 #'     library(foreach); doParallel::registerDoParallel(num_cores)
 score_individuals <- function(individuals,
-                              genes,
+                              genes=NULL,
+                              dist_matrix=NULL,
                               .fitness_fun=NULL,
                               do_par=T){
     
@@ -25,10 +26,10 @@ score_individuals <- function(individuals,
             (-SCORE-min(-SCORE))/(max(-SCORE)-min(-SCORE))*(100-0.01)+0.01
         )
     }
-    
+
     if (do_par){
         score <- foreach::foreach(i=1:nrow(individuals),.combine=c) %dopar% {
-            calc_score(chromosome=individuals$CHROMOSOME[[i]],genes=genes)
+            calc_score(chromosome=individuals$CHROMOSOME[[i]],genes=genes,dist_matrix=dist_matrix)
         }
         individuals <- individuals %>%
             dplyr::mutate(SCORE=score,
@@ -36,7 +37,7 @@ score_individuals <- function(individuals,
             FITNESS=!!.fitness_fun)
     } else {
         individuals <- individuals %>%
-            dplyr::mutate(SCORE=sapply(individuals$CHROMOSOME, calc_score, genes),
+            dplyr::mutate(SCORE=sapply(individuals$CHROMOSOME, calc_score, genes, dist_matrix),
                           RANK=rank(SCORE,na.last="keep",ties.method="random"),
                           FITNESS=!!.fitness_fun)
     }
